@@ -116,7 +116,7 @@
       height: 100%;
       object-fit: cover;
       display: block;
-      transform: scaleX(-1); /* mirror for selfie feel */
+      transform: none;
     }
 
     .camera-overlay {
@@ -607,7 +607,7 @@
     // ── Camera ─────────────────────────────────────────────────────────────
     async function startCamera() {
       try {
-        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'user' } }, audio: false });
+        stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: 'environment' } }, audio: false });
         videoEl.srcObject = stream;
         noCameraMsg.style.display = 'none';
         videoEl.style.display = 'block';
