@@ -805,7 +805,9 @@
           const translated = data.data.translations[0].translatedText;
           setTranslation(text, isFinal, translated);
         } else {
-          setTranslation(text, isFinal, '[Translation unavailable]');
+          const errMsg = data.error ? data.error.message : JSON.stringify(data);
+          console.error('Google Translate API error:', errMsg);
+          setTranslation(text, isFinal, `[Error: ${errMsg}]`);
         }
       } catch (e) {
         setTranslation(text, isFinal, '[Network error]');
