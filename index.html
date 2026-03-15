@@ -51,13 +51,10 @@
     }
 
     .logo-icon {
-      width: 32px;
-      height: 32px;
+      width: 32px; height: 32px;
       background: linear-gradient(135deg, var(--accent), var(--accent2));
       border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       font-size: 16px;
     }
 
@@ -74,47 +71,25 @@
     }
 
     .status-dot {
-      width: 7px;
-      height: 7px;
+      width: 7px; height: 7px;
       border-radius: 50%;
       background: var(--subtext);
       transition: background 0.3s;
     }
-    .status-dot.active  { background: var(--success); box-shadow: 0 0 6px var(--success); }
-    .status-dot.listening { background: var(--danger); box-shadow: 0 0 6px var(--danger); animation: pulse 1s infinite; }
+    .status-dot.active    { background: var(--success); box-shadow: 0 0 6px var(--success); }
+    .status-dot.listening { background: var(--danger);  box-shadow: 0 0 6px var(--danger); animation: pulse 1s infinite; }
 
     @keyframes pulse {
       0%, 100% { opacity: 1; }
       50%       { opacity: 0.4; }
     }
 
-    /* ── API Pill ── */
-    .api-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 11px;
-      font-weight: 500;
-      padding: 2px 9px;
-      border-radius: 999px;
-      background: rgba(99,102,241,0.12);
-      color: #a5b4fc;
-      border: 1px solid rgba(99,102,241,0.25);
-      float: right;
-      margin-top: 1px;
-    }
-    .api-pill-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: #818cf8;
-    }
-
     /* ── Warning ── */
     .warning-banner {
       width: 100%;
       max-width: 480px;
-      background: rgba(251, 146, 60, 0.1);
-      border: 1px solid rgba(251, 146, 60, 0.3);
+      background: rgba(251,146,60,0.1);
+      border: 1px solid rgba(251,146,60,0.3);
       border-radius: 10px;
       padding: 10px 14px;
       font-size: 13px;
@@ -166,43 +141,51 @@
     .swap-btn {
       width: 34px; height: 34px;
       border-radius: 10px;
-      background: rgba(79, 142, 247, 0.12);
-      border: 1px solid rgba(79, 142, 247, 0.25);
+      background: rgba(79,142,247,0.12);
+      border: 1px solid rgba(79,142,247,0.25);
       color: var(--accent);
       display: flex; align-items: center; justify-content: center;
       cursor: pointer;
       font-size: 16px;
-      transition: background 0.2s, transform 0.3s;
       flex-shrink: 0;
+      transition: background 0.2s, transform 0.3s;
     }
-    .swap-btn:hover { background: rgba(79, 142, 247, 0.2); }
+    .swap-btn:hover { background: rgba(79,142,247,0.2); }
     .swap-btn.spinning { transform: rotate(180deg); }
 
-    /* ── Person Panels ── */
+    /* ── Panels ── */
     .panel {
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      align-items: center;
+      gap: 12px;
       padding: 16px;
-      min-height: 200px;
     }
 
+    /*
+      Panel B is rotated 180° so Person B can read it.
+      DOM order inside panel-b is REVERSED relative to panel-a,
+      so after the 180° flip the visual order matches panel-a's layout:
+        DOM [mic, trans-bubble, heard-bubble]
+        → Person B sees [heard-bubble, trans-bubble, mic]
+    */
     .panel-b {
       transform: rotate(180deg);
       border-top: 1px solid var(--border);
     }
 
+    /* ── Speech bubbles ── */
     .speech-bubble {
+      width: 100%;
       background: var(--surface2);
       border: 1px solid var(--border);
       border-radius: 14px;
       padding: 14px 16px;
-      flex: 1;
       position: relative;
       transition: border-color 0.3s;
     }
-    .speech-bubble.active      { border-color: rgba(79, 142, 247, 0.45); }
-    .speech-bubble.translating { border-color: rgba(167, 139, 250, 0.4); }
+    .speech-bubble.active      { border-color: rgba(79,142,247,0.45); }
+    .speech-bubble.translating { border-color: rgba(167,139,250,0.4); }
 
     .bubble-label {
       font-size: 10px;
@@ -213,11 +196,27 @@
       margin-bottom: 8px;
     }
 
+    .api-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 9px;
+      border-radius: 999px;
+      background: rgba(99,102,241,0.12);
+      color: #a5b4fc;
+      border: 1px solid rgba(99,102,241,0.25);
+      float: right;
+      margin-top: 1px;
+    }
+    .api-pill-dot { width: 6px; height: 6px; border-radius: 50%; background: #818cf8; }
+
     .bubble-text {
       font-size: 17px;
       line-height: 1.5;
       color: var(--text);
-      min-height: 26px;
+      min-height: 28px;
     }
     .bubble-text.placeholder { color: var(--subtext); font-style: italic; font-size: 15px; }
 
@@ -230,20 +229,15 @@
       vertical-align: middle;
       margin-left: 2px;
       animation: blink 0.8s step-end infinite;
-      opacity: 0;
     }
-    .cursor.visible { opacity: 1; }
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: 0; }
-    }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
     /* ── Translating Pills ── */
-    .translating-pills {
+    .t-pills {
       display: flex;
       flex-direction: column;
       gap: 9px;
-      padding-top: 3px;
+      padding-top: 2px;
     }
     .t-pill {
       height: 14px;
@@ -251,82 +245,87 @@
       background: linear-gradient(
         90deg,
         var(--surface2) 0%,
-        rgba(79, 142, 247, 0.18) 40%,
-        rgba(167, 139, 250, 0.18) 60%,
+        rgba(79,142,247,0.2) 40%,
+        rgba(167,139,250,0.2) 60%,
         var(--surface2) 100%
       );
       background-size: 300% 100%;
       animation: shimmer 1.6s ease-in-out infinite;
     }
     .t-pill:nth-child(1) { width: 82%; }
-    .t-pill:nth-child(2) { width: 54%; animation-delay: 0.15s; }
+    .t-pill:nth-child(2) { width: 52%; animation-delay: 0.18s; }
     @keyframes shimmer {
       0%   { background-position: 100% 0; }
       100% { background-position: -100% 0; }
     }
 
-    /* ── Centre Controls ── */
-    .controls {
-      padding: 14px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 20px;
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      background: var(--bg);
+    /* ── Per-person Mic Button ── */
+    .person-mic {
+      width: 58px; height: 58px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border: none;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 18px rgba(79,142,247,0.35);
+      flex-shrink: 0;
+    }
+    .person-mic:hover  { transform: scale(1.06); box-shadow: 0 6px 26px rgba(79,142,247,0.5); }
+    .person-mic:active { transform: scale(0.95); }
+    .person-mic.recording {
+      background: linear-gradient(135deg, var(--danger), #fb923c);
+      box-shadow: 0 4px 18px rgba(248,113,113,0.45);
+      animation: mic-pulse 1.5s ease-in-out infinite;
+    }
+    @keyframes mic-pulse {
+      0%, 100% { box-shadow: 0 4px 18px rgba(248,113,113,0.45); }
+      50%       { box-shadow: 0 4px 34px rgba(248,113,113,0.75); }
     }
 
-    .side-btn {
-      width: 44px; height: 44px;
-      border-radius: 12px;
+    .mic-ring {
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      border: 2px solid var(--danger);
+      opacity: 0;
+      display: none;
+      animation: ring-out 1.5s ease-out infinite;
+    }
+    .mic-ring.show { display: block; }
+    @keyframes ring-out {
+      0%   { inset: -4px;  opacity: 0.65; }
+      100% { inset: -16px; opacity: 0; }
+    }
+
+    /* ── Centre Divider ── */
+    .divider-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 20px;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .divider-line { flex: 1; height: 1px; background: var(--border); }
+
+    .clear-btn {
+      width: 38px; height: 38px;
+      border-radius: 10px;
       background: var(--surface2);
       border: 1px solid var(--border);
       color: var(--subtext);
       display: flex; align-items: center; justify-content: center;
       cursor: pointer;
-      font-size: 18px;
+      font-size: 16px;
       transition: all 0.2s;
+      flex-shrink: 0;
     }
-    .side-btn:hover { background: rgba(255,255,255,0.08); color: var(--text); }
-
-    .mic-btn {
-      width: 68px; height: 68px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      border: none;
-      color: white;
-      font-size: 26px;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      transition: transform 0.15s, box-shadow 0.15s;
-      box-shadow: 0 4px 20px rgba(79, 142, 247, 0.35);
-      position: relative;
-    }
-    .mic-btn:hover  { transform: scale(1.05); box-shadow: 0 6px 28px rgba(79, 142, 247, 0.5); }
-    .mic-btn:active { transform: scale(0.96); }
-    .mic-btn.recording {
-      background: linear-gradient(135deg, var(--danger), #fb923c);
-      box-shadow: 0 4px 20px rgba(248, 113, 113, 0.4);
-      animation: mic-pulse 1.5s ease-in-out infinite;
-    }
-    @keyframes mic-pulse {
-      0%, 100% { box-shadow: 0 4px 20px rgba(248, 113, 113, 0.4); }
-      50%       { box-shadow: 0 4px 36px rgba(248, 113, 113, 0.7); }
-    }
-
-    .mic-ring {
-      position: absolute;
-      inset: -8px;
-      border-radius: 50%;
-      border: 2px solid var(--danger);
-      opacity: 0;
-      animation: ring-expand 1.5s ease-out infinite;
-    }
-    @keyframes ring-expand {
-      0%   { inset: -4px;  opacity: 0.6; }
-      100% { inset: -18px; opacity: 0;   }
-    }
+    .clear-btn:hover { background: rgba(255,255,255,0.08); color: var(--text); }
 
     /* ── History ── */
     .history-section {
@@ -338,26 +337,21 @@
       gap: 8px;
     }
     .history-header {
-      font-size: 12px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      color: var(--subtext);
-      padding: 0 4px;
+      font-size: 12px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.8px;
+      color: var(--subtext); padding: 0 4px;
     }
     .history-item {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 12px 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
+      display: flex; flex-direction: column; gap: 4px;
       animation: slideIn 0.3s ease;
     }
     @keyframes slideIn {
       from { opacity: 0; transform: translateY(8px); }
-      to   { opacity: 1; transform: translateY(0);   }
+      to   { opacity: 1; transform: translateY(0); }
     }
     .history-original   { font-size: 13px; color: var(--subtext); }
     .history-translated { font-size: 15px; color: var(--text); font-weight: 500; }
@@ -376,18 +370,18 @@
       LiveTranslate
     </div>
     <div class="status-pill">
-      <div class="status-dot" id="statusDot"></div>
+      <div class="status-dot active" id="statusDot"></div>
       <span id="statusText">Ready</span>
     </div>
   </header>
 
   <div class="warning-banner" id="warningBanner">
-    ⚠️ Speech recognition not supported in this browser. Try Chrome or Edge.
+    ⚠️ Speech recognition not supported. Try Chrome or Edge on Android/desktop.
   </div>
 
   <div class="card">
 
-    <!-- Language selector (Person A's side) -->
+    <!-- Language selector -->
     <div class="lang-bar">
       <select class="lang-select" id="langA">
         <option value="en">English</option>
@@ -404,7 +398,7 @@
         <option value="ar">Arabic</option>
         <option value="hi">Hindi</option>
       </select>
-      <button class="swap-btn" id="swapBtn" title="Swap languages">⇌</button>
+      <button class="swap-btn" id="swapBtn">⇌</button>
       <select class="lang-select" id="langB">
         <option value="de">German</option>
         <option value="en">English</option>
@@ -422,37 +416,57 @@
       </select>
     </div>
 
-    <!-- Person A panel (top, normal orientation) -->
+    <!--
+      PERSON A panel — normal orientation.
+      Layout: heard → translation → mic button
+    -->
     <div class="panel" id="panelA">
-      <div class="speech-bubble" id="bubbleA-heard">
-        <div class="bubble-label">Person A · <span id="labelA-lang">English</span></div>
-        <div class="bubble-text placeholder" id="textA-heard">Tap mic to start… <span class="cursor"></span></div>
+      <div class="speech-bubble" id="bubA-heard">
+        <div class="bubble-label">Person A · <span id="lblA-lang">English</span></div>
+        <div class="bubble-text placeholder" id="txtA-heard">Tap the mic to speak…</div>
       </div>
-      <div class="speech-bubble" id="bubbleA-trans">
-        <div class="bubble-label">Translation → <span id="labelA-target">German</span> <span class="api-pill"><span class="api-pill-dot"></span>Google</span></div>
-        <div class="bubble-text placeholder" id="textA-trans">Translation will appear here</div>
+      <div class="speech-bubble" id="bubA-trans">
+        <div class="bubble-label">
+          Translation → <span id="lblA-target">German</span>
+          <span class="api-pill"><span class="api-pill-dot"></span>Google</span>
+        </div>
+        <div class="bubble-text placeholder" id="txtA-trans">Translation will appear here</div>
       </div>
-    </div>
-
-    <!-- Centre mic controls -->
-    <div class="controls">
-      <button class="side-btn" id="clearBtn" title="Clear">🗑</button>
-      <button class="mic-btn" id="micBtn">
-        <span id="micIcon">🎤</span>
-        <div class="mic-ring" id="micRing" style="display:none"></div>
+      <button class="person-mic" id="micA">
+        <span id="micIconA">🎤</span>
+        <div class="mic-ring" id="ringA"></div>
       </button>
-      <div style="width:44px"></div>
     </div>
 
-    <!-- Person B panel (bottom, rotated 180° so B can read it) -->
+    <!-- Centre divider + clear -->
+    <div class="divider-bar">
+      <div class="divider-line"></div>
+      <button class="clear-btn" id="clearBtn" title="Clear all">🗑</button>
+      <div class="divider-line"></div>
+    </div>
+
+    <!--
+      PERSON B panel — rotated 180° so B can read from their side.
+      DOM order is REVERSED so after the flip Person B sees:
+        visual top    → heard bubble
+        visual middle → translation bubble
+        visual bottom → mic button   (easy to tap from their side)
+    -->
     <div class="panel panel-b" id="panelB">
-      <div class="speech-bubble" id="bubbleB-heard">
-        <div class="bubble-label">Person B · <span id="labelB-lang">German</span></div>
-        <div class="bubble-text placeholder" id="textB-heard">Tap mic to start… <span class="cursor"></span></div>
+      <button class="person-mic" id="micB">
+        <span id="micIconB">🎤</span>
+        <div class="mic-ring" id="ringB"></div>
+      </button>
+      <div class="speech-bubble" id="bubB-trans">
+        <div class="bubble-label">
+          Translation → <span id="lblB-target">English</span>
+          <span class="api-pill"><span class="api-pill-dot"></span>Google</span>
+        </div>
+        <div class="bubble-text placeholder" id="txtB-trans">Translation will appear here</div>
       </div>
-      <div class="speech-bubble" id="bubbleB-trans">
-        <div class="bubble-label">Translation → <span id="labelB-target">English</span> <span class="api-pill"><span class="api-pill-dot"></span>Google</span></div>
-        <div class="bubble-text placeholder" id="textB-trans">Translation will appear here</div>
+      <div class="speech-bubble" id="bubB-heard">
+        <div class="bubble-label">Person B · <span id="lblB-lang">German</span></div>
+        <div class="bubble-text placeholder" id="txtB-heard">Tap the mic to speak…</div>
       </div>
     </div>
 
@@ -465,247 +479,260 @@
   </div>
 
   <script>
-    const GOOGLE_TRANSLATE_API_KEY = 'AIzaSyBlV5AVo86fFt_ccS3IdTdb7WH0aF9_a-U';
+    const GOOGLE_API_KEY = 'AIzaSyBlV5AVo86fFt_ccS3IdTdb7WH0aF9_a-U';
 
     const LANG_NAMES = {
-      en: 'English', de: 'German', fr: 'French', es: 'Spanish',
-      it: 'Italian', pt: 'Portuguese', nl: 'Dutch', ru: 'Russian',
-      ja: 'Japanese', zh: 'Chinese', ko: 'Korean', ar: 'Arabic', hi: 'Hindi'
+      en:'English', de:'German', fr:'French', es:'Spanish', it:'Italian',
+      pt:'Portuguese', nl:'Dutch', ru:'Russian', ja:'Japanese', zh:'Chinese',
+      ko:'Korean', ar:'Arabic', hi:'Hindi'
     };
     const SPEECH_LANG = {
-      en: 'en-US', de: 'de-DE', fr: 'fr-FR', es: 'es-ES',
-      it: 'it-IT', pt: 'pt-PT', nl: 'nl-NL', ru: 'ru-RU',
-      ja: 'ja-JP', zh: 'zh-CN', ko: 'ko-KR', ar: 'ar-SA', hi: 'hi-IN'
+      en:'en-US', de:'de-DE', fr:'fr-FR', es:'es-ES', it:'it-IT',
+      pt:'pt-PT', nl:'nl-NL', ru:'ru-RU', ja:'ja-JP', zh:'zh-CN',
+      ko:'ko-KR', ar:'ar-SA', hi:'hi-IN'
     };
 
-    // ── Elements ──────────────────────────────────────────────────────────
-    const langASelect     = document.getElementById('langA');
-    const langBSelect     = document.getElementById('langB');
-    const swapBtn         = document.getElementById('swapBtn');
-    const micBtn          = document.getElementById('micBtn');
-    const micIcon         = document.getElementById('micIcon');
-    const micRing         = document.getElementById('micRing');
-    const clearBtn        = document.getElementById('clearBtn');
-    const statusDot       = document.getElementById('statusDot');
-    const statusText      = document.getElementById('statusText');
-    const warningBanner   = document.getElementById('warningBanner');
-    const historySection  = document.getElementById('historySection');
-    const historyList     = document.getElementById('historyList');
+    // ── DOM refs ──────────────────────────────────────────────────────────
+    const langAEl   = document.getElementById('langA');
+    const langBEl   = document.getElementById('langB');
+    const swapBtn   = document.getElementById('swapBtn');
+    const clearBtn  = document.getElementById('clearBtn');
+    const statusDot = document.getElementById('statusDot');
+    const statusTxt = document.getElementById('statusText');
 
-    const bubbleA_heard   = document.getElementById('bubbleA-heard');
-    const bubbleA_trans   = document.getElementById('bubbleA-trans');
-    const textA_heard     = document.getElementById('textA-heard');
-    const textA_trans     = document.getElementById('textA-trans');
+    const micA = document.getElementById('micA'), micIconA = document.getElementById('micIconA'), ringA = document.getElementById('ringA');
+    const micB = document.getElementById('micB'), micIconB = document.getElementById('micIconB'), ringB = document.getElementById('ringB');
 
-    const bubbleB_heard   = document.getElementById('bubbleB-heard');
-    const bubbleB_trans   = document.getElementById('bubbleB-trans');
-    const textB_heard     = document.getElementById('textB-heard');
-    const textB_trans     = document.getElementById('textB-trans');
+    const bubA_heard = document.getElementById('bubA-heard'), txtA_heard = document.getElementById('txtA-heard');
+    const bubA_trans = document.getElementById('bubA-trans'), txtA_trans = document.getElementById('txtA-trans');
+    const bubB_heard = document.getElementById('bubB-heard'), txtB_heard = document.getElementById('txtB-heard');
+    const bubB_trans = document.getElementById('bubB-trans'), txtB_trans = document.getElementById('txtB-trans');
 
-    const labelA_lang     = document.getElementById('labelA-lang');
-    const labelA_target   = document.getElementById('labelA-target');
-    const labelB_lang     = document.getElementById('labelB-lang');
-    const labelB_target   = document.getElementById('labelB-target');
+    const lblA_lang   = document.getElementById('lblA-lang');
+    const lblA_target = document.getElementById('lblA-target');
+    const lblB_lang   = document.getElementById('lblB-lang');
+    const lblB_target = document.getElementById('lblB-target');
+
+    const historySection = document.getElementById('historySection');
+    const historyList    = document.getElementById('historyList');
 
     // ── State ─────────────────────────────────────────────────────────────
-    let isListening = false;
-    let recogA = null;
-    let recogB = null;
+    let activeRecog  = null;   // only ever ONE recognition running
+    let activePerson = null;   // 'A' or 'B'
     const history = [];
 
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
-      warningBanner.style.display = 'block';
-      micBtn.style.opacity = '0.4';
-      micBtn.style.pointerEvents = 'none';
+      document.getElementById('warningBanner').style.display = 'block';
+      [micA, micB].forEach(b => { b.style.opacity = '0.4'; b.style.pointerEvents = 'none'; });
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────
-    function showPills(el, bubble) {
-      el.className = 'bubble-text';
-      el.innerHTML = '<div class="translating-pills"><div class="t-pill"></div><div class="t-pill"></div></div>';
+    // ── UI helpers ────────────────────────────────────────────────────────
+    function setStatus(type, text) {
+      statusDot.className = 'status-dot' + (type ? ' ' + type : '');
+      statusTxt.textContent = text;
+    }
+
+    function showPills(textEl, bubble) {
+      textEl.className = 'bubble-text';
+      textEl.innerHTML = '<div class="t-pills"><div class="t-pill"></div><div class="t-pill"></div></div>';
       bubble.classList.add('translating');
     }
 
-    function setHeard(el, bubble, text) {
-      el.className = 'bubble-text';
-      el.innerHTML = text + ' <span class="cursor visible"></span>';
-      bubble.classList.add('active');
+    function showText(textEl, bubble, text, isPlaceholder) {
+      textEl.className = 'bubble-text' + (isPlaceholder ? ' placeholder' : '');
+      textEl.textContent = text;
+      bubble.classList.remove('translating', 'active');
     }
 
-    function setTranslated(el, bubble, text) {
-      el.className = 'bubble-text';
-      el.textContent = text;
+    function showHeard(textEl, bubble, text) {
+      textEl.className = 'bubble-text';
+      textEl.innerHTML = text + '<span class="cursor"></span>';
+      bubble.classList.add('active');
       bubble.classList.remove('translating');
     }
 
-    function resetBubble(el, bubble, placeholder) {
-      el.className = 'bubble-text placeholder';
-      el.innerHTML = placeholder + ' <span class="cursor"></span>';
-      bubble.classList.remove('active', 'translating');
+    function setMicRecording(person, on) {
+      const btn  = person === 'A' ? micA  : micB;
+      const icon = person === 'A' ? micIconA : micIconB;
+      const ring = person === 'A' ? ringA : ringB;
+      if (on) {
+        btn.classList.add('recording');
+        icon.textContent = '⏹';
+        ring.classList.add('show');
+      } else {
+        btn.classList.remove('recording');
+        icon.textContent = '🎤';
+        ring.classList.remove('show');
+      }
     }
 
     // ── Translation ───────────────────────────────────────────────────────
-    async function translateText(text, src, tgt, isFinal, transEl, transBubble) {
+    async function translate(text, src, tgt, isFinal, transEl, transBubble) {
       if (src === tgt) {
-        setTranslated(transEl, transBubble, text);
+        showText(transEl, transBubble, text, false);
         return;
       }
       try {
-        const url = `https://translation.googleapis.com/language/translate/v2?key=${GOOGLE_TRANSLATE_API_KEY}`;
-        const res = await fetch(url, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ q: text, source: src, target: tgt, format: 'text' })
-        });
+        const res = await fetch(
+          `https://translation.googleapis.com/language/translate/v2?key=${GOOGLE_API_KEY}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ q: text, source: src, target: tgt, format: 'text' })
+          }
+        );
         const data = await res.json();
-        if (data.data && data.data.translations && data.data.translations[0]) {
+        if (data.data?.translations?.[0]) {
           const translated = data.data.translations[0].translatedText;
-          setTranslated(transEl, transBubble, translated);
+          showText(transEl, transBubble, translated, false);
           if (isFinal) addToHistory(text, translated, src, tgt);
         } else {
-          const msg = data.error ? data.error.message : JSON.stringify(data);
-          setTranslated(transEl, transBubble, `[Error: ${msg}]`);
+          const msg = data.error?.message || JSON.stringify(data);
+          showText(transEl, transBubble, `[Error: ${msg}]`, false);
         }
       } catch (e) {
-        setTranslated(transEl, transBubble, '[Network error]');
+        showText(transEl, transBubble, '[Network error]', false);
       }
     }
 
-    // ── Recognition factory ───────────────────────────────────────────────
-    function makeRecognition(langCode, heardEl, heardBubble, transEl, transBubble, getSrc, getTgt) {
+    // ── Recognition ───────────────────────────────────────────────────────
+    function startRecognition(person) {
+      if (!SpeechRecognition) return;
+
+      // If this person is already active, stop them
+      if (activePerson === person) {
+        stopAll();
+        return;
+      }
+
+      // Stop whoever was active
+      stopAll(/* keepStatus */ true);
+
+      const isA     = person === 'A';
+      const langSrc = isA ? langAEl.value : langBEl.value;
+      const langTgt = isA ? langBEl.value : langAEl.value;
+      const heardEl = isA ? txtA_heard : txtB_heard;
+      const heardBub= isA ? bubA_heard : bubB_heard;
+      const transEl = isA ? txtA_trans : txtB_trans;
+      const transBub= isA ? bubA_trans : bubB_trans;
+
       const r = new SpeechRecognition();
       r.continuous = true;
       r.interimResults = true;
-      r.lang = SPEECH_LANG[langCode] || langCode;
+      r.lang = SPEECH_LANG[langSrc] || langSrc;
 
-      let debounceTimer = null;
+      let debounce = null;
       let lastInterim = '';
 
+      r.onstart = () => {
+        activePerson = person;
+        setMicRecording(person, true);
+        setStatus('listening', `Listening (Person ${person})…`);
+      };
+
       r.onresult = (event) => {
-        let interim = '';
-        let final = '';
+        let interim = '', final = '';
         for (let i = event.resultIndex; i < event.results.length; i++) {
           const t = event.results[i][0].transcript;
           if (event.results[i].isFinal) final += t;
           else interim += t;
         }
-        const display = final || interim;
-        if (!display.trim()) return;
+        const display = (final || interim).trim();
+        if (!display) return;
 
-        setHeard(heardEl, heardBubble, display);
-        clearTimeout(debounceTimer);
-        const text = display.trim();
+        showHeard(heardEl, heardBub, display);
+        clearTimeout(debounce);
 
         if (final) {
-          showPills(transEl, transBubble);
-          translateText(text, getSrc(), getTgt(), true, transEl, transBubble);
-        } else {
-          debounceTimer = setTimeout(() => {
-            if (text !== lastInterim) {
-              lastInterim = text;
-              showPills(transEl, transBubble);
-              translateText(text, getSrc(), getTgt(), false, transEl, transBubble);
-            }
-          }, 400);
+          showPills(transEl, transBub);
+          // Capture current lang values at the moment of the result
+          const src = isA ? langAEl.value : langBEl.value;
+          const tgt = isA ? langBEl.value : langAEl.value;
+          translate(final.trim(), src, tgt, true, transEl, transBub);
+          lastInterim = '';
+        } else if (display !== lastInterim) {
+          lastInterim = display;
+          debounce = setTimeout(() => {
+            showPills(transEl, transBub);
+            const src = isA ? langAEl.value : langBEl.value;
+            const tgt = isA ? langBEl.value : langAEl.value;
+            translate(display, src, tgt, false, transEl, transBub);
+          }, 450);
         }
       };
 
       r.onerror = (e) => {
         if (e.error === 'no-speech') return;
         if (e.error === 'not-allowed') {
-          isListening = false;
-          stopListening();
+          stopAll();
           setStatus('', 'Mic denied');
         }
+        // 'aborted' and others: onend will handle restart
       };
 
       r.onend = () => {
-        if (isListening) {
-          try { r.start(); } catch (e) {}
+        // Auto-restart if we're still supposed to be listening
+        if (activePerson === person && activeRecog === r) {
+          try { r.start(); } catch (ex) {}
         }
       };
 
-      return r;
+      activeRecog = r;
+      try { r.start(); } catch (e) {
+        console.error('Recognition start failed:', e);
+        setStatus('', 'Mic error');
+        activeRecog = null;
+        activePerson = null;
+      }
     }
 
-    // ── Listening control ─────────────────────────────────────────────────
-    function startListening() {
-      if (!SpeechRecognition) return;
-      isListening = true;
-
-      recogA = makeRecognition(
-        langASelect.value,
-        textA_heard, bubbleA_heard,
-        textA_trans, bubbleA_trans,
-        () => langASelect.value,
-        () => langBSelect.value
-      );
-      recogB = makeRecognition(
-        langBSelect.value,
-        textB_heard, bubbleB_heard,
-        textB_trans, bubbleB_trans,
-        () => langBSelect.value,
-        () => langASelect.value
-      );
-
-      try { recogA.start(); } catch (e) {}
-      try { recogB.start(); } catch (e) {}
-
-      micBtn.classList.add('recording');
-      micIcon.textContent = '⏹';
-      micRing.style.display = 'block';
-      setStatus('listening', 'Listening…');
+    function stopAll(keepStatus) {
+      if (activeRecog) {
+        const prev = activePerson;
+        activePerson = null;          // set first so onend doesn't restart
+        try { activeRecog.stop(); } catch (e) {}
+        activeRecog = null;
+        if (prev) setMicRecording(prev, false);
+      }
+      if (!keepStatus) setStatus('active', 'Ready');
     }
 
-    function stopListening() {
-      isListening = false;
-      if (recogA) { try { recogA.stop(); } catch (e) {} recogA = null; }
-      if (recogB) { try { recogB.stop(); } catch (e) {} recogB = null; }
-
-      micBtn.classList.remove('recording');
-      micIcon.textContent = '🎤';
-      micRing.style.display = 'none';
-      setStatus('active', 'Ready');
-    }
-
-    micBtn.addEventListener('click', () => {
-      if (isListening) stopListening();
-      else startListening();
-    });
+    micA.addEventListener('click', () => startRecognition('A'));
+    micB.addEventListener('click', () => startRecognition('B'));
 
     // ── Language selectors ────────────────────────────────────────────────
     function updateLabels() {
-      const a = LANG_NAMES[langASelect.value] || langASelect.value;
-      const b = LANG_NAMES[langBSelect.value] || langBSelect.value;
-      labelA_lang.textContent   = a;
-      labelA_target.textContent = b;
-      labelB_lang.textContent   = b;
-      labelB_target.textContent = a;
+      const a = LANG_NAMES[langAEl.value] || langAEl.value;
+      const b = LANG_NAMES[langBEl.value] || langBEl.value;
+      lblA_lang.textContent   = a;
+      lblA_target.textContent = b;
+      lblB_lang.textContent   = b;
+      lblB_target.textContent = a;
     }
 
     function onLangChange() {
       updateLabels();
-      if (isListening) {
-        stopListening();
-        setTimeout(startListening, 150);
+      // Restart active recognition with new language
+      if (activePerson) {
+        const p = activePerson;
+        stopAll(true);
+        setTimeout(() => startRecognition(p), 150);
       }
     }
 
-    langASelect.addEventListener('change', onLangChange);
-    langBSelect.addEventListener('change', onLangChange);
+    langAEl.addEventListener('change', onLangChange);
+    langBEl.addEventListener('change', onLangChange);
 
     swapBtn.addEventListener('click', () => {
       swapBtn.classList.add('spinning');
       setTimeout(() => swapBtn.classList.remove('spinning'), 300);
-      const tmp = langASelect.value;
-      langASelect.value = langBSelect.value;
-      langBSelect.value = tmp;
+      const tmp = langAEl.value;
+      langAEl.value = langBEl.value;
+      langBEl.value = tmp;
       onLangChange();
     });
-
-    updateLabels();
 
     // ── Clear ─────────────────────────────────────────────────────────────
     clearBtn.addEventListener('click', () => {
@@ -713,27 +740,23 @@
       historySection.style.display = 'none';
       historyList.innerHTML = '';
 
-      resetBubble(textA_heard, bubbleA_heard, 'Tap mic to start…');
-      textA_trans.className = 'bubble-text placeholder';
-      textA_trans.textContent = 'Translation will appear here';
-      bubbleA_trans.classList.remove('active', 'translating');
+      [
+        [txtA_heard, bubA_heard, 'Tap the mic to speak…'],
+        [txtB_heard, bubB_heard, 'Tap the mic to speak…'],
+      ].forEach(([el, bub, ph]) => showText(el, bub, ph, true));
 
-      resetBubble(textB_heard, bubbleB_heard, 'Tap mic to start…');
-      textB_trans.className = 'bubble-text placeholder';
-      textB_trans.textContent = 'Translation will appear here';
-      bubbleB_trans.classList.remove('active', 'translating');
+      [
+        [txtA_trans, bubA_trans],
+        [txtB_trans, bubB_trans],
+      ].forEach(([el, bub]) => showText(el, bub, 'Translation will appear here', true));
     });
 
     // ── History ───────────────────────────────────────────────────────────
     function addToHistory(original, translated, src, tgt) {
-      const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      history.unshift({ original, translated, src: LANG_NAMES[src] || src, tgt: LANG_NAMES[tgt] || tgt, time });
+      const time = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+      history.unshift({ original, translated, src: LANG_NAMES[src]||src, tgt: LANG_NAMES[tgt]||tgt, time });
       if (history.length > 20) history.pop();
-      renderHistory();
-    }
 
-    function renderHistory() {
-      if (!history.length) { historySection.style.display = 'none'; return; }
       historySection.style.display = 'flex';
       historyList.innerHTML = '';
       history.forEach(item => {
@@ -748,12 +771,8 @@
       });
     }
 
-    // ── Status ────────────────────────────────────────────────────────────
-    function setStatus(type, text) {
-      statusDot.className = 'status-dot' + (type ? ' ' + type : '');
-      statusText.textContent = text;
-    }
-
+    // ── Init ──────────────────────────────────────────────────────────────
+    updateLabels();
     setStatus('active', 'Ready');
   </script>
 </body>
