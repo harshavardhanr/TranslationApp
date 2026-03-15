@@ -198,6 +198,28 @@
     }
     .no-camera-msg .cam-icon { font-size: 40px; opacity: 0.4; }
 
+    /* ── API Pill ── */
+    .api-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 9px;
+      border-radius: 999px;
+      background: rgba(99,102,241,0.12);
+      color: #a5b4fc;
+      border: 1px solid rgba(99,102,241,0.25);
+      float: right;
+      margin-top: 1px;
+    }
+    .api-pill-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #818cf8;
+    }
+
     /* ── Translation Box ── */
     .translation-section {
       padding: 16px;
@@ -559,6 +581,7 @@
   <script>
     // ── Config ─────────────────────────────────────────────────────────────
     const GOOGLE_TRANSLATE_API_KEY = 'AIzaSyBlV5AVo86fFt_ccS3IdTdb7WH0aF9_a-U';
+    const TRANSLATION_PROVIDER = 'Google';
 
     // ── State ──────────────────────────────────────────────────────────────
     let stream = null;
@@ -805,7 +828,7 @@
       const src = LANG_NAMES[sourceLang.value] || sourceLang.value;
       const tgt = LANG_NAMES[targetLang.value] || targetLang.value;
       originalLangLabel.textContent = `Speaking in ${src}`;
-      translatedLangLabel.textContent = `Translation → ${tgt}`;
+      translatedLangLabel.innerHTML = `Translation → ${tgt}<span class="api-pill"><span class="api-pill-dot"></span>${TRANSLATION_PROVIDER}</span>`;
     }
 
     sourceLang.addEventListener('change', () => {
