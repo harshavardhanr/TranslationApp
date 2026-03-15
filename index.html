@@ -640,10 +640,13 @@
     // ── Text-to-speech ─────────────────────────────────────────────────────
     function speak(text, langCode) {
       if (!ttsEnabled || !window.speechSynthesis) return;
-      speechSynthesis.cancel();
       const utter = new SpeechSynthesisUtterance(text);
       utter.lang = SPEECH_LANG[langCode] || langCode;
-      speechSynthesis.speak(utter);
+      // Chrome bug: speechSynthesis silently pauses after ~15 s idle; resume() fixes it.
+      // cancel() must also settle before speak() or the new utterance gets dropped.
+      window.speechSynthesis.resume();
+      window.speechSynthesis.cancel();
+      setTimeout(() => window.speechSynthesis.speak(utter), 50);
     }
 
     ttsBtn.addEventListener('click', () => {
