@@ -78,13 +78,8 @@
     }
     .status-dot.active    { background: var(--success); box-shadow: 0 0 6px var(--success); }
     .status-dot.listening { background: var(--danger);  box-shadow: 0 0 6px var(--danger); animation: pulse 1s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.4} }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: 0.4; }
-    }
-
-    /* ── Warning ── */
     .warning-banner {
       width: 100%;
       max-width: 480px;
@@ -150,41 +145,44 @@
       flex-shrink: 0;
       transition: background 0.2s, transform 0.3s;
     }
-    .swap-btn:hover { background: rgba(79,142,247,0.2); }
+    .swap-btn:hover    { background: rgba(79,142,247,0.2); }
     .swap-btn.spinning { transform: rotate(180deg); }
 
     /* ── Panels ── */
     .panel {
       display: flex;
       flex-direction: column;
-      align-items: center;
-      gap: 12px;
+      gap: 10px;
       padding: 16px;
     }
 
     /*
-      Panel B is rotated 180° so Person B can read it.
-      DOM order inside panel-b is REVERSED relative to panel-a,
-      so after the 180° flip the visual order matches panel-a's layout:
-        DOM [mic, trans-bubble, heard-bubble]
-        → Person B sees [heard-bubble, trans-bubble, mic]
+      Panel B is rotated 180° so Person B can read from their side.
+      Its DOM order is the same as Panel A (heard → trans), but after
+      rotation Person B sees them in reverse: trans on top, heard below —
+      still readable because the whole element is flipped.
     */
     .panel-b {
       transform: rotate(180deg);
       border-top: 1px solid var(--border);
     }
 
+    /* Active panel gets a left-border glow to indicate it's listening */
+    .panel.listening-here {
+      background: rgba(79,142,247,0.03);
+    }
+    .panel.listening-here .speech-bubble.heard-bub {
+      border-color: rgba(79,142,247,0.5);
+    }
+
     /* ── Speech bubbles ── */
     .speech-bubble {
-      width: 100%;
       background: var(--surface2);
       border: 1px solid var(--border);
       border-radius: 14px;
       padding: 14px 16px;
-      position: relative;
       transition: border-color 0.3s;
     }
-    .speech-bubble.active      { border-color: rgba(79,142,247,0.45); }
     .speech-bubble.translating { border-color: rgba(167,139,250,0.4); }
 
     .bubble-label {
@@ -210,7 +208,7 @@
       float: right;
       margin-top: 1px;
     }
-    .api-pill-dot { width: 6px; height: 6px; border-radius: 50%; background: #818cf8; }
+    .api-pill-dot { width:6px;height:6px;border-radius:50%;background:#818cf8; }
 
     .bubble-text {
       font-size: 17px;
@@ -220,7 +218,6 @@
     }
     .bubble-text.placeholder { color: var(--subtext); font-style: italic; font-size: 15px; }
 
-    /* Typing cursor */
     .cursor {
       display: inline-block;
       width: 2px; height: 18px;
@@ -230,15 +227,10 @@
       margin-left: 2px;
       animation: blink 0.8s step-end infinite;
     }
-    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    @keyframes blink { 0%,100%{opacity:1}50%{opacity:0} }
 
     /* ── Translating Pills ── */
-    .t-pills {
-      display: flex;
-      flex-direction: column;
-      gap: 9px;
-      padding-top: 2px;
-    }
+    .t-pills { display:flex;flex-direction:column;gap:9px;padding-top:2px; }
     .t-pill {
       height: 14px;
       border-radius: 999px;
@@ -252,38 +244,79 @@
       background-size: 300% 100%;
       animation: shimmer 1.6s ease-in-out infinite;
     }
-    .t-pill:nth-child(1) { width: 82%; }
-    .t-pill:nth-child(2) { width: 52%; animation-delay: 0.18s; }
-    @keyframes shimmer {
-      0%   { background-position: 100% 0; }
-      100% { background-position: -100% 0; }
+    .t-pill:nth-child(1) { width:80%; }
+    .t-pill:nth-child(2) { width:52%;animation-delay:0.18s; }
+    @keyframes shimmer { 0%{background-position:100% 0}100%{background-position:-100% 0} }
+
+    /* ── Centre Controls ── */
+    .controls {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 16px;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
     }
 
-    /* ── Per-person Mic Button ── */
-    .person-mic {
-      width: 58px; height: 58px;
+    .controls-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      width: 100%;
+    }
+
+    /* "Now listening for…" chip */
+    .turn-chip {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 5px 14px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--subtext);
+      transition: all 0.3s;
+      opacity: 0;
+    }
+    .turn-chip.visible { opacity: 1; }
+    .turn-chip.active-a { border-color: rgba(79,142,247,0.4); color: var(--accent); }
+    .turn-chip.active-b { border-color: rgba(167,139,250,0.4); color: var(--accent2); }
+
+    .turn-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+      animation: pulse 1s infinite;
+    }
+
+    .mic-btn {
+      width: 66px; height: 66px;
       border-radius: 50%;
       background: linear-gradient(135deg, var(--accent), var(--accent2));
       border: none;
       color: white;
-      font-size: 24px;
+      font-size: 26px;
       cursor: pointer;
       display: flex; align-items: center; justify-content: center;
       position: relative;
       transition: transform 0.15s, box-shadow 0.15s;
-      box-shadow: 0 4px 18px rgba(79,142,247,0.35);
-      flex-shrink: 0;
+      box-shadow: 0 4px 20px rgba(79,142,247,0.35);
     }
-    .person-mic:hover  { transform: scale(1.06); box-shadow: 0 6px 26px rgba(79,142,247,0.5); }
-    .person-mic:active { transform: scale(0.95); }
-    .person-mic.recording {
+    .mic-btn:hover  { transform: scale(1.05); box-shadow: 0 6px 28px rgba(79,142,247,0.5); }
+    .mic-btn:active { transform: scale(0.95); }
+    .mic-btn.recording {
       background: linear-gradient(135deg, var(--danger), #fb923c);
-      box-shadow: 0 4px 18px rgba(248,113,113,0.45);
+      box-shadow: 0 4px 20px rgba(248,113,113,0.4);
       animation: mic-pulse 1.5s ease-in-out infinite;
     }
     @keyframes mic-pulse {
-      0%, 100% { box-shadow: 0 4px 18px rgba(248,113,113,0.45); }
-      50%       { box-shadow: 0 4px 34px rgba(248,113,113,0.75); }
+      0%,100%{box-shadow:0 4px 20px rgba(248,113,113,0.4)}
+      50%{box-shadow:0 4px 36px rgba(248,113,113,0.7)}
     }
 
     .mic-ring {
@@ -296,36 +329,20 @@
       animation: ring-out 1.5s ease-out infinite;
     }
     .mic-ring.show { display: block; }
-    @keyframes ring-out {
-      0%   { inset: -4px;  opacity: 0.65; }
-      100% { inset: -16px; opacity: 0; }
-    }
+    @keyframes ring-out { 0%{inset:-4px;opacity:0.65}100%{inset:-18px;opacity:0} }
 
-    /* ── Centre Divider ── */
-    .divider-bar {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 20px;
-      background: var(--bg);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-    .divider-line { flex: 1; height: 1px; background: var(--border); }
-
-    .clear-btn {
-      width: 38px; height: 38px;
-      border-radius: 10px;
+    .side-btn {
+      width: 44px; height: 44px;
+      border-radius: 12px;
       background: var(--surface2);
       border: 1px solid var(--border);
       color: var(--subtext);
       display: flex; align-items: center; justify-content: center;
       cursor: pointer;
-      font-size: 16px;
+      font-size: 18px;
       transition: all 0.2s;
-      flex-shrink: 0;
     }
-    .clear-btn:hover { background: rgba(255,255,255,0.08); color: var(--text); }
+    .side-btn:hover { background: rgba(255,255,255,0.08); color: var(--text); }
 
     /* ── History ── */
     .history-section {
@@ -349,10 +366,7 @@
       display: flex; flex-direction: column; gap: 4px;
       animation: slideIn 0.3s ease;
     }
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
+    @keyframes slideIn { from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)} }
     .history-original   { font-size: 13px; color: var(--subtext); }
     .history-translated { font-size: 15px; color: var(--text); font-weight: 500; }
     .history-meta       { font-size: 11px; color: var(--subtext); opacity: 0.6; margin-top: 2px; }
@@ -376,7 +390,7 @@
   </header>
 
   <div class="warning-banner" id="warningBanner">
-    ⚠️ Speech recognition not supported. Try Chrome or Edge on Android/desktop.
+    ⚠️ Speech recognition not supported. Try Chrome or Edge.
   </div>
 
   <div class="card">
@@ -417,13 +431,13 @@
     </div>
 
     <!--
-      PERSON A panel — normal orientation.
-      Layout: heard → translation → mic button
+      Person A panel — normal orientation.
+      Heard text on top, translation below.
     -->
     <div class="panel" id="panelA">
-      <div class="speech-bubble" id="bubA-heard">
+      <div class="speech-bubble heard-bub" id="bubA-heard">
         <div class="bubble-label">Person A · <span id="lblA-lang">English</span></div>
-        <div class="bubble-text placeholder" id="txtA-heard">Tap the mic to speak…</div>
+        <div class="bubble-text placeholder" id="txtA-heard">Waiting to listen…</div>
       </div>
       <div class="speech-bubble" id="bubA-trans">
         <div class="bubble-label">
@@ -432,41 +446,40 @@
         </div>
         <div class="bubble-text placeholder" id="txtA-trans">Translation will appear here</div>
       </div>
-      <button class="person-mic" id="micA">
-        <span id="micIconA">🎤</span>
-        <div class="mic-ring" id="ringA"></div>
-      </button>
     </div>
 
-    <!-- Centre divider + clear -->
-    <div class="divider-bar">
-      <div class="divider-line"></div>
-      <button class="clear-btn" id="clearBtn" title="Clear all">🗑</button>
-      <div class="divider-line"></div>
+    <!-- Centre mic + "listening for" indicator -->
+    <div class="controls">
+      <div class="turn-chip" id="turnChip">
+        <div class="turn-dot"></div>
+        <span id="turnChipText">Listening for English</span>
+      </div>
+      <div class="controls-row">
+        <button class="side-btn" id="clearBtn" title="Clear all">🗑</button>
+        <button class="mic-btn" id="micBtn">
+          <span id="micIcon">🎤</span>
+          <div class="mic-ring" id="micRing"></div>
+        </button>
+        <div style="width:44px"></div>
+      </div>
     </div>
 
     <!--
-      PERSON B panel — rotated 180° so B can read from their side.
-      DOM order is REVERSED so after the flip Person B sees:
-        visual top    → heard bubble
-        visual middle → translation bubble
-        visual bottom → mic button   (easy to tap from their side)
+      Person B panel — rotated 180° so B reads it right-side up.
+      Same DOM order as Panel A; after rotation Person B sees
+      translation at visual-top and heard-text at visual-bottom.
     -->
     <div class="panel panel-b" id="panelB">
-      <button class="person-mic" id="micB">
-        <span id="micIconB">🎤</span>
-        <div class="mic-ring" id="ringB"></div>
-      </button>
+      <div class="speech-bubble heard-bub" id="bubB-heard">
+        <div class="bubble-label">Person B · <span id="lblB-lang">German</span></div>
+        <div class="bubble-text placeholder" id="txtB-heard">Waiting to listen…</div>
+      </div>
       <div class="speech-bubble" id="bubB-trans">
         <div class="bubble-label">
           Translation → <span id="lblB-target">English</span>
           <span class="api-pill"><span class="api-pill-dot"></span>Google</span>
         </div>
         <div class="bubble-text placeholder" id="txtB-trans">Translation will appear here</div>
-      </div>
-      <div class="speech-bubble" id="bubB-heard">
-        <div class="bubble-label">Person B · <span id="lblB-lang">German</span></div>
-        <div class="bubble-text placeholder" id="txtB-heard">Tap the mic to speak…</div>
       </div>
     </div>
 
@@ -492,21 +505,25 @@
       ko:'ko-KR', ar:'ar-SA', hi:'hi-IN'
     };
 
-    // ── DOM refs ──────────────────────────────────────────────────────────
-    const langAEl   = document.getElementById('langA');
-    const langBEl   = document.getElementById('langB');
-    const swapBtn   = document.getElementById('swapBtn');
-    const clearBtn  = document.getElementById('clearBtn');
-    const statusDot = document.getElementById('statusDot');
-    const statusTxt = document.getElementById('statusText');
+    // ── DOM ────────────────────────────────────────────────────────────────
+    const langAEl    = document.getElementById('langA');
+    const langBEl    = document.getElementById('langB');
+    const swapBtn    = document.getElementById('swapBtn');
+    const clearBtn   = document.getElementById('clearBtn');
+    const micBtn     = document.getElementById('micBtn');
+    const micIcon    = document.getElementById('micIcon');
+    const micRing    = document.getElementById('micRing');
+    const statusDot  = document.getElementById('statusDot');
+    const statusTxt  = document.getElementById('statusText');
+    const turnChip   = document.getElementById('turnChip');
+    const turnChipTx = document.getElementById('turnChipText');
+    const panelA     = document.getElementById('panelA');
+    const panelB     = document.getElementById('panelB');
 
-    const micA = document.getElementById('micA'), micIconA = document.getElementById('micIconA'), ringA = document.getElementById('ringA');
-    const micB = document.getElementById('micB'), micIconB = document.getElementById('micIconB'), ringB = document.getElementById('ringB');
-
-    const bubA_heard = document.getElementById('bubA-heard'), txtA_heard = document.getElementById('txtA-heard');
-    const bubA_trans = document.getElementById('bubA-trans'), txtA_trans = document.getElementById('txtA-trans');
-    const bubB_heard = document.getElementById('bubB-heard'), txtB_heard = document.getElementById('txtB-heard');
-    const bubB_trans = document.getElementById('bubB-trans'), txtB_trans = document.getElementById('txtB-trans');
+    const bubA_h = document.getElementById('bubA-heard'), txtA_h = document.getElementById('txtA-heard');
+    const bubA_t = document.getElementById('bubA-trans'), txtA_t = document.getElementById('txtA-trans');
+    const bubB_h = document.getElementById('bubB-heard'), txtB_h = document.getElementById('txtB-heard');
+    const bubB_t = document.getElementById('bubB-trans'), txtB_t = document.getElementById('txtB-trans');
 
     const lblA_lang   = document.getElementById('lblA-lang');
     const lblA_target = document.getElementById('lblA-target');
@@ -516,22 +533,40 @@
     const historySection = document.getElementById('historySection');
     const historyList    = document.getElementById('historyList');
 
-    // ── State ─────────────────────────────────────────────────────────────
-    let activeRecog  = null;   // only ever ONE recognition running
-    let activePerson = null;   // 'A' or 'B'
-    const history = [];
+    // ── State ──────────────────────────────────────────────────────────────
+    let isSessionActive = false;
+    let currentTurn     = 'A';   // whose turn it is to speak: 'A' or 'B'
+    let recog           = null;
+    let restartTimer    = null;
+    const history       = [];
 
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
     if (!SpeechRecognition) {
       document.getElementById('warningBanner').style.display = 'block';
-      [micA, micB].forEach(b => { b.style.opacity = '0.4'; b.style.pointerEvents = 'none'; });
+      micBtn.style.opacity = '0.4';
+      micBtn.style.pointerEvents = 'none';
     }
 
-    // ── UI helpers ────────────────────────────────────────────────────────
+    // ── UI helpers ─────────────────────────────────────────────────────────
     function setStatus(type, text) {
       statusDot.className = 'status-dot' + (type ? ' ' + type : '');
       statusTxt.textContent = text;
+    }
+
+    function updateTurnIndicator() {
+      if (!isSessionActive) {
+        turnChip.className = 'turn-chip';
+        return;
+      }
+      const isA    = currentTurn === 'A';
+      const lang   = LANG_NAMES[isA ? langAEl.value : langBEl.value] || '…';
+      turnChipTx.textContent = `Listening for ${lang}`;
+      turnChip.className = 'turn-chip visible ' + (isA ? 'active-a' : 'active-b');
+
+      // Highlight the active panel
+      panelA.classList.toggle('listening-here',  isA);
+      panelB.classList.toggle('listening-here', !isA);
     }
 
     function showPills(textEl, bubble) {
@@ -540,40 +575,20 @@
       bubble.classList.add('translating');
     }
 
-    function showText(textEl, bubble, text, isPlaceholder) {
-      textEl.className = 'bubble-text' + (isPlaceholder ? ' placeholder' : '');
+    function showText(textEl, bubble, text, placeholder) {
+      textEl.className = 'bubble-text' + (placeholder ? ' placeholder' : '');
       textEl.textContent = text;
-      bubble.classList.remove('translating', 'active');
-    }
-
-    function showHeard(textEl, bubble, text) {
-      textEl.className = 'bubble-text';
-      textEl.innerHTML = text + '<span class="cursor"></span>';
-      bubble.classList.add('active');
       bubble.classList.remove('translating');
     }
 
-    function setMicRecording(person, on) {
-      const btn  = person === 'A' ? micA  : micB;
-      const icon = person === 'A' ? micIconA : micIconB;
-      const ring = person === 'A' ? ringA : ringB;
-      if (on) {
-        btn.classList.add('recording');
-        icon.textContent = '⏹';
-        ring.classList.add('show');
-      } else {
-        btn.classList.remove('recording');
-        icon.textContent = '🎤';
-        ring.classList.remove('show');
-      }
+    function showHeard(textEl, text) {
+      textEl.className = 'bubble-text';
+      textEl.innerHTML = text + '<span class="cursor"></span>';
     }
 
-    // ── Translation ───────────────────────────────────────────────────────
+    // ── Translation ────────────────────────────────────────────────────────
     async function translate(text, src, tgt, isFinal, transEl, transBubble) {
-      if (src === tgt) {
-        showText(transEl, transBubble, text, false);
-        return;
-      }
+      if (src === tgt) { showText(transEl, transBubble, text, false); return; }
       try {
         const res = await fetch(
           `https://translation.googleapis.com/language/translate/v2?key=${GOOGLE_API_KEY}`,
@@ -585,52 +600,41 @@
         );
         const data = await res.json();
         if (data.data?.translations?.[0]) {
-          const translated = data.data.translations[0].translatedText;
-          showText(transEl, transBubble, translated, false);
-          if (isFinal) addToHistory(text, translated, src, tgt);
+          const out = data.data.translations[0].translatedText;
+          showText(transEl, transBubble, out, false);
+          if (isFinal) addToHistory(text, out, src, tgt);
         } else {
-          const msg = data.error?.message || JSON.stringify(data);
-          showText(transEl, transBubble, `[Error: ${msg}]`, false);
+          showText(transEl, transBubble, '[Error: ' + (data.error?.message || '?') + ']', false);
         }
       } catch (e) {
         showText(transEl, transBubble, '[Network error]', false);
       }
     }
 
-    // ── Recognition ───────────────────────────────────────────────────────
-    function startRecognition(person) {
-      if (!SpeechRecognition) return;
+    // ── Recognition — one instance, alternating turns ──────────────────────
+    function listen() {
+      if (!SpeechRecognition || !isSessionActive) return;
 
-      // If this person is already active, stop them
-      if (activePerson === person) {
-        stopAll();
-        return;
+      // Tear down any existing instance
+      if (recog) {
+        try { recog.stop(); } catch (e) {}
+        recog = null;
       }
 
-      // Stop whoever was active
-      stopAll(/* keepStatus */ true);
-
-      const isA     = person === 'A';
-      const langSrc = isA ? langAEl.value : langBEl.value;
-      const langTgt = isA ? langBEl.value : langAEl.value;
-      const heardEl = isA ? txtA_heard : txtB_heard;
-      const heardBub= isA ? bubA_heard : bubB_heard;
-      const transEl = isA ? txtA_trans : txtB_trans;
-      const transBub= isA ? bubA_trans : bubB_trans;
+      const isA    = currentTurn === 'A';
+      const src    = isA ? langAEl.value : langBEl.value;
+      const tgt    = isA ? langBEl.value : langAEl.value;
+      const heardEl   = isA ? txtA_h : txtB_h;
+      const heardBub  = isA ? bubA_h : bubB_h;
+      const transEl   = isA ? txtA_t : txtB_t;
+      const transBub  = isA ? bubA_t : bubB_t;
 
       const r = new SpeechRecognition();
-      r.continuous = true;
-      r.interimResults = true;
-      r.lang = SPEECH_LANG[langSrc] || langSrc;
+      r.continuous      = false;   // stop after one utterance, we handle the loop
+      r.interimResults  = true;
+      r.lang            = SPEECH_LANG[src] || src;
 
-      let debounce = null;
-      let lastInterim = '';
-
-      r.onstart = () => {
-        activePerson = person;
-        setMicRecording(person, true);
-        setStatus('listening', `Listening (Person ${person})…`);
-      };
+      let gotFinal = false;
 
       r.onresult = (event) => {
         let interim = '', final = '';
@@ -642,67 +646,74 @@
         const display = (final || interim).trim();
         if (!display) return;
 
-        showHeard(heardEl, heardBub, display);
-        clearTimeout(debounce);
+        showHeard(heardEl, display);
 
-        if (final) {
+        if (final && !gotFinal) {
+          gotFinal = true;
           showPills(transEl, transBub);
-          // Capture current lang values at the moment of the result
-          const src = isA ? langAEl.value : langBEl.value;
-          const tgt = isA ? langBEl.value : langAEl.value;
           translate(final.trim(), src, tgt, true, transEl, transBub);
-          lastInterim = '';
-        } else if (display !== lastInterim) {
-          lastInterim = display;
-          debounce = setTimeout(() => {
-            showPills(transEl, transBub);
-            const src = isA ? langAEl.value : langBEl.value;
-            const tgt = isA ? langBEl.value : langAEl.value;
-            translate(display, src, tgt, false, transEl, transBub);
-          }, 450);
+          // Switch turn — the recognition's onend will call listen() again
+          currentTurn = isA ? 'B' : 'A';
+          updateTurnIndicator();
         }
       };
 
       r.onerror = (e) => {
-        if (e.error === 'no-speech') return;
+        // 'no-speech' is normal silence — onend restarts automatically
         if (e.error === 'not-allowed') {
-          stopAll();
+          isSessionActive = false;
+          stopSession();
           setStatus('', 'Mic denied');
         }
-        // 'aborted' and others: onend will handle restart
       };
 
       r.onend = () => {
-        // Auto-restart if we're still supposed to be listening
-        if (activePerson === person && activeRecog === r) {
-          try { r.start(); } catch (ex) {}
-        }
+        if (!isSessionActive) return;
+        // Small gap so the mic has time to fully release before restarting
+        clearTimeout(restartTimer);
+        restartTimer = setTimeout(listen, 250);
       };
 
-      activeRecog = r;
-      try { r.start(); } catch (e) {
-        console.error('Recognition start failed:', e);
-        setStatus('', 'Mic error');
-        activeRecog = null;
-        activePerson = null;
+      recog = r;
+      try {
+        r.start();
+        updateTurnIndicator();
+        setStatus('listening', 'Listening…');
+      } catch (e) {
+        console.error('Recognition start error:', e);
+        clearTimeout(restartTimer);
+        restartTimer = setTimeout(listen, 500);
       }
     }
 
-    function stopAll(keepStatus) {
-      if (activeRecog) {
-        const prev = activePerson;
-        activePerson = null;          // set first so onend doesn't restart
-        try { activeRecog.stop(); } catch (e) {}
-        activeRecog = null;
-        if (prev) setMicRecording(prev, false);
-      }
-      if (!keepStatus) setStatus('active', 'Ready');
+    function startSession() {
+      isSessionActive = true;
+      currentTurn = 'A';
+      micBtn.classList.add('recording');
+      micIcon.textContent = '⏹';
+      micRing.classList.add('show');
+      listen();
     }
 
-    micA.addEventListener('click', () => startRecognition('A'));
-    micB.addEventListener('click', () => startRecognition('B'));
+    function stopSession() {
+      isSessionActive = false;
+      clearTimeout(restartTimer);
+      if (recog) { try { recog.stop(); } catch (e) {} recog = null; }
+      micBtn.classList.remove('recording');
+      micIcon.textContent = '🎤';
+      micRing.classList.remove('show');
+      panelA.classList.remove('listening-here');
+      panelB.classList.remove('listening-here');
+      turnChip.className = 'turn-chip';
+      setStatus('active', 'Ready');
+    }
 
-    // ── Language selectors ────────────────────────────────────────────────
+    micBtn.addEventListener('click', () => {
+      if (isSessionActive) stopSession();
+      else startSession();
+    });
+
+    // ── Language / swap ────────────────────────────────────────────────────
     function updateLabels() {
       const a = LANG_NAMES[langAEl.value] || langAEl.value;
       const b = LANG_NAMES[langBEl.value] || langBEl.value;
@@ -714,11 +725,11 @@
 
     function onLangChange() {
       updateLabels();
-      // Restart active recognition with new language
-      if (activePerson) {
-        const p = activePerson;
-        stopAll(true);
-        setTimeout(() => startRecognition(p), 150);
+      if (isSessionActive) {
+        // Restart the current recognition with the updated language
+        clearTimeout(restartTimer);
+        if (recog) { try { recog.stop(); } catch (e) {} recog = null; }
+        restartTimer = setTimeout(listen, 150);
       }
     }
 
@@ -731,32 +742,32 @@
       const tmp = langAEl.value;
       langAEl.value = langBEl.value;
       langBEl.value = tmp;
+      // Also flip the active turn so the same "person" keeps going
+      if (isSessionActive) currentTurn = currentTurn === 'A' ? 'B' : 'A';
       onLangChange();
     });
 
-    // ── Clear ─────────────────────────────────────────────────────────────
+    // ── Clear ──────────────────────────────────────────────────────────────
     clearBtn.addEventListener('click', () => {
       history.length = 0;
       historySection.style.display = 'none';
       historyList.innerHTML = '';
-
-      [
-        [txtA_heard, bubA_heard, 'Tap the mic to speak…'],
-        [txtB_heard, bubB_heard, 'Tap the mic to speak…'],
-      ].forEach(([el, bub, ph]) => showText(el, bub, ph, true));
-
-      [
-        [txtA_trans, bubA_trans],
-        [txtB_trans, bubB_trans],
-      ].forEach(([el, bub]) => showText(el, bub, 'Translation will appear here', true));
+      showText(txtA_h, bubA_h, 'Waiting to listen…', true);
+      showText(txtA_t, bubA_t, 'Translation will appear here', true);
+      showText(txtB_h, bubB_h, 'Waiting to listen…', true);
+      showText(txtB_t, bubB_t, 'Translation will appear here', true);
     });
 
-    // ── History ───────────────────────────────────────────────────────────
+    // ── History ────────────────────────────────────────────────────────────
     function addToHistory(original, translated, src, tgt) {
       const time = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
-      history.unshift({ original, translated, src: LANG_NAMES[src]||src, tgt: LANG_NAMES[tgt]||tgt, time });
+      history.unshift({
+        original, translated,
+        src: LANG_NAMES[src] || src,
+        tgt: LANG_NAMES[tgt] || tgt,
+        time
+      });
       if (history.length > 20) history.pop();
-
       historySection.style.display = 'flex';
       historyList.innerHTML = '';
       history.forEach(item => {
@@ -771,7 +782,7 @@
       });
     }
 
-    // ── Init ──────────────────────────────────────────────────────────────
+    // ── Init ───────────────────────────────────────────────────────────────
     updateLabels();
     setStatus('active', 'Ready');
   </script>
