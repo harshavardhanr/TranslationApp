@@ -278,35 +278,15 @@
       width: 100%;
     }
 
-    /* "Now listening for…" chip — floats above the buttons, out of flow */
-    .turn-chip {
-      position: absolute;
-      top: 8px;
-      left: 50%;
-      transform: translateX(-50%);
-      white-space: nowrap;
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: 5px 14px;
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--subtext);
-      transition: all 0.3s;
-      opacity: 0;
+    /* Listening translate box — thicker blue stroke + directional glow pulse */
+    .panel.listening-here .speech-bubble:not(.heard-bub) {
+      border-color: rgba(79,142,247,0.85);
+      border-width: 2px;
+      animation: listen-glow 2s ease-in-out infinite;
     }
-    .turn-chip.visible { opacity: 1; }
-    .turn-chip.active-a { border-color: rgba(79,142,247,0.4); color: var(--accent); }
-    .turn-chip.active-b { border-color: rgba(167,139,250,0.4); color: var(--accent2); }
-
-    .turn-dot {
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: currentColor;
-      animation: pulse 1s infinite;
+    @keyframes listen-glow {
+      0%,100% { box-shadow: 0 10px 28px rgba(79,142,247,0.18), 0 4px 10px rgba(79,142,247,0.10); }
+      50%      { box-shadow: 0 18px 52px rgba(79,142,247,0.45), 0 6px 20px rgba(79,142,247,0.28); }
     }
 
     .mic-btn {
@@ -508,11 +488,7 @@
 
     <!-- Centre mic + "listening for" indicator -->
     <div class="controls">
-      <div class="turn-chip" id="turnChip">
-        <div class="turn-dot"></div>
-        <span id="turnChipText">Listening for English</span>
-      </div>
-      <div class="controls-row">
+<div class="controls-row">
         <button class="side-btn" id="clearBtn" title="Clear all">🗑</button>
         <button class="mic-btn" id="micBtn">
           <span id="micIcon">🎤</span>
@@ -571,8 +547,6 @@
     const ttsBtn     = document.getElementById('ttsBtn');
     const statusDot  = document.getElementById('statusDot');
     const statusTxt  = document.getElementById('statusText');
-    const turnChip   = document.getElementById('turnChip');
-    const turnChipTx = document.getElementById('turnChipText');
     const panelA     = document.getElementById('panelA');
     const panelB     = document.getElementById('panelB');
 
@@ -613,15 +587,11 @@
 
     function updateTurnIndicator() {
       if (!isSessionActive) {
-        turnChip.className = 'turn-chip';
+        panelA.classList.remove('listening-here');
+        panelB.classList.remove('listening-here');
         return;
       }
-      const isA    = currentTurn === 'A';
-      const lang   = LANG_NAMES[isA ? langAEl.value : langBEl.value] || '…';
-      turnChipTx.textContent = `Listening for ${lang}`;
-      turnChip.className = 'turn-chip visible ' + (isA ? 'active-a' : 'active-b');
-
-      // Highlight the active panel
+      const isA = currentTurn === 'A';
       panelA.classList.toggle('listening-here',  isA);
       panelB.classList.toggle('listening-here', !isA);
     }
@@ -791,7 +761,6 @@
       micRing.classList.remove('show');
       panelA.classList.remove('listening-here');
       panelB.classList.remove('listening-here');
-      turnChip.className = 'turn-chip';
       setStatus('active', 'Ready');
     }
 
