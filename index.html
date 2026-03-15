@@ -171,9 +171,7 @@
     .panel.listening-here {
       background: rgba(79,142,247,0.03);
     }
-    .panel.listening-here .speech-bubble.heard-bub {
-      border-color: rgba(79,142,247,0.5);
-    }
+
 
     /* ── Speech bubbles ── */
     .speech-bubble {
@@ -279,7 +277,7 @@
     }
 
     /* Listening translate box — thicker blue stroke + directional glow pulse */
-    .panel.listening-here .speech-bubble:not(.heard-bub) {
+    .panel.listening-here .speech-bubble.heard-bub {
       border-color: rgba(79,142,247,0.85);
       border-width: 2px;
       animation: listen-glow 2s ease-in-out infinite;
