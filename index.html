@@ -218,6 +218,16 @@
     }
     .bubble-text.placeholder { color: var(--subtext); font-style: italic; font-size: 15px; }
 
+    /* Heard bubble — compact */
+    .heard-bub { padding: 10px 14px; }
+    .heard-bub .bubble-text        { font-size: 14px; }
+    .heard-bub .bubble-text.placeholder { font-size: 13px; }
+
+    /* Translation bubble — larger */
+    .speech-bubble:not(.heard-bub) { padding: 18px 20px; }
+    .speech-bubble:not(.heard-bub) .bubble-text        { font-size: 21px; }
+    .speech-bubble:not(.heard-bub) .bubble-text.placeholder { font-size: 15px; }
+
     .cursor {
       display: inline-block;
       width: 2px; height: 18px;
@@ -505,7 +515,7 @@
           <span id="micIcon">🎤</span>
           <div class="mic-ring" id="micRing"></div>
         </button>
-        <div style="width:44px"></div>
+        <button class="side-btn" id="ttsBtn" title="Text-to-speech">🔇</button>
       </div>
     </div>
 
@@ -558,6 +568,7 @@
     const micBtn     = document.getElementById('micBtn');
     const micIcon    = document.getElementById('micIcon');
     const micRing    = document.getElementById('micRing');
+    const ttsBtn     = document.getElementById('ttsBtn');
     const statusDot  = document.getElementById('statusDot');
     const statusTxt  = document.getElementById('statusText');
     const turnChip   = document.getElementById('turnChip');
@@ -583,6 +594,7 @@
     let currentTurn     = 'A';   // whose turn it is to speak: 'A' or 'B'
     let recog           = null;
     let restartTimer    = null;
+    let ttsEnabled      = false;
     const history       = [];
 
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -631,6 +643,23 @@
       textEl.innerHTML = text + '<span class="cursor"></span>';
     }
 
+    // ── Text-to-speech ─────────────────────────────────────────────────────
+    function speak(text, langCode) {
+      if (!ttsEnabled || !window.speechSynthesis) return;
+      speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.lang = SPEECH_LANG[langCode] || langCode;
+      speechSynthesis.speak(utter);
+    }
+
+    ttsBtn.addEventListener('click', () => {
+      ttsEnabled = !ttsEnabled;
+      ttsBtn.textContent = ttsEnabled ? '🔊' : '🔇';
+      ttsBtn.style.color    = ttsEnabled ? 'var(--accent)' : '';
+      ttsBtn.style.background = ttsEnabled ? 'rgba(79,142,247,0.12)' : '';
+      ttsBtn.style.borderColor = ttsEnabled ? 'rgba(79,142,247,0.3)' : '';
+    });
+
     // ── Translation ────────────────────────────────────────────────────────
     async function translate(text, src, tgt, isFinal, transEl, transBubble) {
       if (src === tgt) { showText(transEl, transBubble, text, false); return; }
@@ -647,7 +676,10 @@
         if (data.data?.translations?.[0]) {
           const out = data.data.translations[0].translatedText;
           showText(transEl, transBubble, out, false);
-          if (isFinal) addToHistory(text, out, src, tgt);
+          if (isFinal) {
+            addToHistory(text, out, src, tgt);
+            speak(out, tgt);
+          }
         } else {
           showText(transEl, transBubble, '[Error: ' + (data.error?.message || '?') + ']', false);
         }
