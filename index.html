@@ -258,12 +258,13 @@
 
     /* ── Centre Controls ── */
     .controls {
+      position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       gap: 10px;
-      padding: 14px 16px;
+      padding: 8px 16px;
       background: var(--bg);
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
@@ -277,8 +278,13 @@
       width: 100%;
     }
 
-    /* "Now listening for…" chip */
+    /* "Now listening for…" chip — floats above the buttons, out of flow */
     .turn-chip {
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      white-space: nowrap;
       display: flex;
       align-items: center;
       gap: 7px;
