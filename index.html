@@ -655,6 +655,13 @@
       ttsBtn.style.color    = ttsEnabled ? 'var(--accent)' : '';
       ttsBtn.style.background = ttsEnabled ? 'rgba(79,142,247,0.12)' : '';
       ttsBtn.style.borderColor = ttsEnabled ? 'rgba(79,142,247,0.3)' : '';
+      // Browsers block speechSynthesis from async callbacks unless it has been
+      // "unlocked" by a direct user gesture first. Speak a silent utterance here
+      // (inside this click handler) so subsequent async speak() calls are allowed.
+      if (ttsEnabled && window.speechSynthesis) {
+        const unlock = new SpeechSynthesisUtterance('');
+        window.speechSynthesis.speak(unlock);
+      }
     });
 
     // ── Translation ────────────────────────────────────────────────────────
