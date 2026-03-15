@@ -205,8 +205,6 @@
       background: rgba(99,102,241,0.12);
       color: #a5b4fc;
       border: 1px solid rgba(99,102,241,0.25);
-      float: right;
-      margin-top: 1px;
     }
     .api-pill-dot { width:6px;height:6px;border-radius:50%;background:#818cf8; }
 
@@ -263,6 +261,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      justify-content: center;
       gap: 10px;
       padding: 14px 16px;
       background: var(--bg);
@@ -437,6 +436,7 @@
     <div class="logo">
       <div class="logo-icon">🌐</div>
       LiveTranslate
+      <span class="api-pill"><span class="api-pill-dot"></span>Google</span>
     </div>
     <div class="status-pill">
       <div class="status-dot active" id="statusDot"></div>
@@ -495,10 +495,7 @@
         <div class="bubble-text placeholder" id="txtA-heard">Waiting to listen…</div>
       </div>
       <div class="speech-bubble" id="bubA-trans">
-        <div class="bubble-label">
-          Translation → <span id="lblA-target">German</span>
-          <span class="api-pill"><span class="api-pill-dot"></span>Google</span>
-        </div>
+        <div class="bubble-label">Translation → <span id="lblA-target">German</span></div>
         <div class="bubble-text placeholder" id="txtA-trans">Translation will appear here</div>
       </div>
     </div>
@@ -530,10 +527,7 @@
         <div class="bubble-text placeholder" id="txtB-heard">Waiting to listen…</div>
       </div>
       <div class="speech-bubble" id="bubB-trans">
-        <div class="bubble-label">
-          Translation → <span id="lblB-target">English</span>
-          <span class="api-pill"><span class="api-pill-dot"></span>Google</span>
-        </div>
+        <div class="bubble-label">Translation → <span id="lblB-target">English</span></div>
         <div class="bubble-text placeholder" id="txtB-trans">Translation will appear here</div>
       </div>
     </div>
