@@ -557,6 +557,9 @@
   </div>
 
   <script>
+    // ── Config ─────────────────────────────────────────────────────────────
+    const GOOGLE_TRANSLATE_API_KEY = 'YOUR_GOOGLE_CLOUD_API_KEY';
+
     // ── State ──────────────────────────────────────────────────────────────
     let stream = null;
     let recognition = null;
@@ -766,13 +769,17 @@
       cursor2.classList.add('visible');
 
       try {
-        // MyMemory free translation API
-        const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${src}|${tgt}`;
-        const res = await fetch(url);
+        // Google Cloud Translation API v2
+        const url = `https://translation.googleapis.com/language/translate/v2?key=${GOOGLE_TRANSLATE_API_KEY}`;
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ q: text, source: src, target: tgt, format: 'text' })
+        });
         const data = await res.json();
 
-        if (data.responseStatus === 200) {
-          const translated = data.responseData.translatedText;
+        if (data.data && data.data.translations && data.data.translations[0]) {
+          const translated = data.data.translations[0].translatedText;
           setTranslation(text, isFinal, translated);
         } else {
           setTranslation(text, isFinal, '[Translation unavailable]');
